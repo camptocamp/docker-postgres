@@ -10,3 +10,7 @@ RUN apt-get update \
     done \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
+
+# allow the container to be started with `--user`
+RUN chmod g=u /etc/passwd \
+  && sed -i '/# allow the container to be started with `--user`/a if ! whoami &> /dev/null; then\n\tif [ -w /etc/passwd ]; then\n\t\techo "${USER_NAME:-default}:x:$(id -u):0:${USER_NAME:-default} user:${HOME}:/sbin/nologin" >> /etc/passwd\n\tfi\nfi' /usr/local/bin/docker-entrypoint.sh
