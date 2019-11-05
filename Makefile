@@ -1,13 +1,13 @@
 define build-image-9.x
 	@echo Base tag $1
 	@echo Postgis versions $2
-	docker build --no-cache --build-arg BASE_TAG=$1 --build-arg POSTGISVERSIONS=$2 -t camptocamp/postgres:$1 9.x
+	docker build --build-arg BASE_TAG=$1 --build-arg POSTGISVERSIONS=$2 -t camptocamp/postgres:$1 9.x
 endef
 
 define build-image-1x
 	@echo Base tag $1
 	@echo Postgis versions $2
-	docker build --no-cache --build-arg BASE_TAG=$1 --build-arg POSTGISVERSIONS=$2 -t camptocamp/postgres:$1 1x
+	docker build --build-arg BASE_TAG=$1 --build-arg POSTGISVERSIONS=$2 -t camptocamp/postgres:$1 1x
 endef
 
 all: 9.4 9.5 9.6 10 11
