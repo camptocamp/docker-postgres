@@ -8,10 +8,11 @@ RUN make install deps pg_build
 
 FROM postgres:${BASE_TAG}
 
-ARG POSTGISVERSIONS
+ARG POSTGIS_VERSIONS
 
 RUN apt-get update && \
-    for POSTGIS_VERSION in $POSTGIS_VERSIONS; do \
+    echo "Postgis versions '$POSTGIS_VERSIONS'" && \
+    for POSTGIS_VERSION in ${POSTGIS_VERSIONS}; do \
       DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
       postgresql-contrib \
       postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION \
