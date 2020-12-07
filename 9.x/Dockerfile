@@ -1,18 +1,15 @@
 ARG BASE_TAG
-FROM golang:1.13 as builder
-RUN go get github.com/wal-g/wal-g || true && \
-    apt update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y cmake liblzo2-dev
-WORKDIR /go/src/github.com/wal-g/wal-g
-RUN make install deps pg_build
-
 FROM postgres:${BASE_TAG}
 
 ARG POSTGISVERSIONS
+ENV DEBIAN_FRONTEND=noninteractive
+ENV WALG_VERISON=0.2.19
+ENV WALG_SHA=e4be62bbdb19e088a1419dff7a30350ceb6762cfba2c57120c92bb7b92303e98
 
-RUN apt-get update && \
+RUN apt-get update && apt-get upgrade -y && \
+    echo "Postgis versions '$POSTGIS_VERSIONS'" && \
     for POSTGIS_VERSION in $POSTGISVERSIONS ; do \
-      DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+      apt-get install --no-install-recommends -y \
       postgresql-contrib-$PG_MAJOR=$PG_VERSION \
       postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION \
       postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION-scripts \
