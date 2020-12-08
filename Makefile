@@ -3,7 +3,7 @@ space := $(subst ,, )
 define build-image
 	@echo Base tag $1
 	@echo Postgis versions $2
-	docker build --pull --no-cache --build-arg BASE_TAG=${1} --build-arg POSTGIS_VERSIONS=${2} -t camptocamp/postgres:${1}-postgis-$(subst $(space),-,${2}) 1x
+	docker build --pull --no-cache --build-arg BASE_TAG=${1} --build-arg POSTGIS_VERSIONS=${2} -t camptocamp/postgres:${1}-postgis-$(subst $(space),-,${2}) .
 endef
 
 all: 9.4 9.5 9.6 10 11 12 13
