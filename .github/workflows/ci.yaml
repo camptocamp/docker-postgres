@@ -2,6 +2,8 @@
 name: Build PostgreSQL images
 
 on:
+  schedule:
+    - cron: "2 2 * * SUN"
   push:
     branches:
     - master
