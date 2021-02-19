@@ -1,5 +1,7 @@
 # Camptocamp's PostgreSQL Docker container
 
+[![Build PostgreSQL images](https://github.com/camptocamp/docker-postgres/actions/workflows/ci.yaml/badge.svg)](https://github.com/camptocamp/docker-postgres/actions/workflows/ci.yaml)
+
 This image extends the [official PostgreSQL image](https://hub.docker.com/_/postgres/) with the following features:
 
 - [PostGIS](http://postgis.net/)
