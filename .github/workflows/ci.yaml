@@ -24,5 +24,8 @@ jobs:
         patterns: docker
 
     - name: "Create the customized docker images"
+      env:
+        PUSH_DOCKER_HUB: true
+        PUSH_GHCR: true
       run: |
-        make all
+        make 12
