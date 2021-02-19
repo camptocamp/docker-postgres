@@ -10,9 +10,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-      PUSH_DOCKER_HUB: true
-      PUSH_GHCR: true
 
     steps:
     - uses: actions/checkout@v2
@@ -23,9 +20,9 @@ jobs:
         github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
         patterns: docker
 
-    - name: "Create the customized docker images"
+    - name: "Build and Push images"
       env:
         PUSH_DOCKER_HUB: true
         PUSH_GHCR: true
       run: |
-        make 12
+        make all
