@@ -3,8 +3,6 @@ FROM postgres:${BASE_TAG}
 
 ARG POSTGIS_VERSIONS
 ENV DEBIAN_FRONTEND=noninteractive
-ENV WALG_VERISON=0.2.19
-ENV WALG_SHA=e4be62bbdb19e088a1419dff7a30350ceb6762cfba2c57120c92bb7b92303e98
 
 RUN apt-get update && apt-get upgrade -y
 RUN echo "Postgis versions '$POSTGIS_VERSIONS'" && \
@@ -23,6 +21,10 @@ RUN echo "Postgis versions '$POSTGIS_VERSIONS'" && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -L -s https://github.com/wal-g/wal-g/releases/download/v${WALG_VERISON}/wal-g.linux-amd64.tar.gz | \
-    tar xvz -C /usr/local/bin && \
+ENV WALG_VERISON=1.0
+ENV WALG_SHA=35e95fe25ea82d24d190b417f33d7069c89413d3c662c3a358c3bcd794c809a2
+
+RUN curl -L -s https://github.com/wal-g/wal-g/releases/download/v${WALG_VERISON}/wal-g-pg-ubuntu-18.04-amd64 \
+    -o /usr/local/bin/wal-g && \
+    chmod +x /usr/local/bin/wal-g && \
     [ $(sha256sum /usr/local/bin/wal-g | cut -f1 -d' ') = ${WALG_SHA} ]
