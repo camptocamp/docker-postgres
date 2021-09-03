@@ -17,7 +17,7 @@ RUN echo "Postgis versions '$POSTGIS_VERSIONS'" && \
     else \
       apt-get install --no-install-recommends -y postgresql-contrib-$PG_MAJOR; \
     fi && \
-    apt-get install -y ca-certificates tmux screen curl && \
+    apt-get install -y ca-certificates tmux screen curl less && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
