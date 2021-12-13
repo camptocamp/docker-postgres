@@ -35,3 +35,6 @@ all: 9.4 9.5 9.6 10 11 12 13
 13:
 	$(call build-image,"13","2.5")
 	$(call build-image,"13","3")
+
+14:
+	$(call build-image,"14","3")
