@@ -9,7 +9,7 @@ define build-image
 	$(if ${PUSH_GHCR},docker push ghcr.io/camptocamp/postgres:${1}-postgis-$(subst $(space),-,${2}),)
 endef
 
-all: 9.4 9.5 9.6 10 11 12 13
+all: 9.4 9.5 9.6 10 11 12 13 14
 
 9.4:
 	$(call build-image,"9.4","2.3 2.4 2.5")
