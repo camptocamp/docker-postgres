@@ -25,6 +25,17 @@ ENV WALG_VERISON=1.0
 ENV WALG_SHA=35e95fe25ea82d24d190b417f33d7069c89413d3c662c3a358c3bcd794c809a2
 
 RUN curl -L -s https://github.com/wal-g/wal-g/releases/download/v${WALG_VERISON}/wal-g-pg-ubuntu-18.04-amd64 \
-    -o /usr/local/bin/wal-g && \
-    chmod +x /usr/local/bin/wal-g && \
-    [ $(sha256sum /usr/local/bin/wal-g | cut -f1 -d' ') = ${WALG_SHA} ]
+    -o /usr/local/bin/wal-g-1.0 && \
+    chmod +x /usr/local/bin/wal-g-1.0 && \
+    [ $(sha256sum /usr/local/bin/wal-g-1.0 | cut -f1 -d' ') = ${WALG_SHA} ]
+
+ENV WALG_VERISON=2.0.0
+ENV WALG_SHA=eb9fdbb65c7aef80f59f4b5d6ff4a99b814bec7a71f441690a817c92b53435cb
+
+RUN curl -L -s https://github.com/wal-g/wal-g/releases/download/v${WALG_VERISON}/wal-g-pg-ubuntu-18.04-amd64 \
+    -o /usr/local/bin/wal-g-2.0.0 && \
+    chmod +x /usr/local/bin/wal-g-2.0.0  && \
+    [ $(sha256sum /usr/local/bin/wal-g-2.0.0 | cut -f1 -d' ') = ${WALG_SHA} ]
+
+RUN cd /usr/local/bin/ && \
+    ln -s wal-g-2.0.0 wal-g
