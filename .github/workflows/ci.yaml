@@ -5,13 +5,12 @@ on:
   schedule:
     - cron: "2 2 * * SUN"
   push:
-    branches:
-    - master
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
     - uses: actions/checkout@v2
@@ -22,9 +21,16 @@ jobs:
         github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
         patterns: docker
 
-    - name: "Build and Push images"
+    - name: "Build images"
+      env:
+        PUSH_DOCKER_HUB: false
+        PUSH_GHCR: false
+      run: |
+        make all
+    - name: "Push images"
       env:
         PUSH_DOCKER_HUB: true
         PUSH_GHCR: true
       run: |
         make all
+      if: github.ref == 'master'
