@@ -2,7 +2,8 @@ ARG BASE_TAG
 FROM postgres:${BASE_TAG}
 
 ARG POSTGIS_VERSIONS
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    LANG=C.UTF-8
 
 RUN apt-get update && apt-get upgrade -y
 RUN echo "Postgis versions '$POSTGIS_VERSIONS'" && \
