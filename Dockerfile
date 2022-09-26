@@ -1,11 +1,48 @@
 ARG BASE_TAG
+FROM postgres:${BASE_TAG} AS builder
+
+RUN echo "deb http://deb.debian.org/debian stretch-backports main contrib non-free"  > /etc/apt/sources.list.d/backport.list && \
+    apt-get update && \
+    apt-get install -y unzip build-essential git wget libbrotli-dev
+
+# Install Golang
+RUN wget https://go.dev/dl/go1.19.1.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.19.1.linux-amd64.tar.gz
+
+ENV PATH=$PATH:/usr/local/go/bin
+RUN go version
+
+# Install Wal-g 1.1
+WORKDIR /usr/src
+RUN git clone --progress --branch v1.1 https://github.com/wal-g/wal-g.git
+
+WORKDIR wal-g
+
+RUN git submodule update --init --recursive --force --progress && \
+    go mod vendor && \
+    make pg_build
+
+RUN ./main/pg/wal-g --version && \
+    cp ./main/pg/wal-g /wal-g-v1.1
+
+RUN git checkout v2.0.1 && \
+    git submodule update --init --recursive --force --progress && \
+    go mod vendor && \
+    make pg_build
+
+RUN ./main/pg/wal-g --version && \
+    cp ./main/pg/wal-g /wal-g-v2.0.1
+
+ARG BASE_TAG
 FROM postgres:${BASE_TAG}
 
 ARG POSTGIS_VERSIONS
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8
 
-RUN apt-get update && apt-get upgrade -y && \
+RUN echo "deb http://deb.debian.org/debian stretch-backports main contrib non-free"  > /etc/apt/sources.list.d/backport.list && \
+    apt-get update && apt-get upgrade -y && \
+    apt-get install -y libbrotli-dev && \
     echo "Postgis versions '$POSTGIS_VERSIONS'" && \
     for POSTGIS_VERSION in ${POSTGIS_VERSIONS}; do \
       apt-get install --no-install-recommends -y \
@@ -22,21 +59,8 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ENV WALG_VERISON=1.0
-ENV WALG_SHA=35e95fe25ea82d24d190b417f33d7069c89413d3c662c3a358c3bcd794c809a2
-
-RUN curl -L -s https://github.com/wal-g/wal-g/releases/download/v${WALG_VERISON}/wal-g-pg-ubuntu-18.04-amd64 \
-    -o /usr/local/bin/wal-g-1.0 && \
-    chmod +x /usr/local/bin/wal-g-1.0 && \
-    [ $(sha256sum /usr/local/bin/wal-g-1.0 | cut -f1 -d' ') = ${WALG_SHA} ]
-
-ENV WALG_VERISON=2.0.0
-ENV WALG_SHA=eb9fdbb65c7aef80f59f4b5d6ff4a99b814bec7a71f441690a817c92b53435cb
-
-RUN curl -L -s https://github.com/wal-g/wal-g/releases/download/v${WALG_VERISON}/wal-g-pg-ubuntu-18.04-amd64 \
-    -o /usr/local/bin/wal-g-2.0.0 && \
-    chmod +x /usr/local/bin/wal-g-2.0.0  && \
-    [ $(sha256sum /usr/local/bin/wal-g-2.0.0 | cut -f1 -d' ') = ${WALG_SHA} ]
+COPY --from=builder /wal-g-v1.1 /usr/local/bin/wal-g-v1.1
+COPY --from=builder /wal-g-v2.0.1 /usr/local/bin/wal-g-v2.0.1
 
 RUN cd /usr/local/bin/ && \
-    ln -s wal-g-2.0.0 wal-g
+    ln -s wal-g-v2.0.1 wal-g
