@@ -16,6 +16,7 @@ define build-image
 	$(if ${PUSH_DOCKER_HUB},docker push camptocamp/postgres:${1}-postgis-$(subst $(space),-,${2}),)
 	$(if ${PUSH_GHCR},docker tag camptocamp/postgres:${1}-postgis-$(subst $(space),-,${2}) ghcr.io/camptocamp/postgres:${1}-postgis-$(subst $(space),-,${2}),)
 	$(if ${PUSH_GHCR},docker push ghcr.io/camptocamp/postgres:${1}-postgis-$(subst $(space),-,${2}),)
+	docker system prune --all -f
 endef
 
 all: 9.4 9.5 9.6 10 11 12 13 14
