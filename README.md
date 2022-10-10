@@ -7,6 +7,7 @@ This image extends the [official PostgreSQL image](https://hub.docker.com/_/post
 - [PostGIS](http://postgis.net/)
 - [pgRouting](http://pgrouting.org/)
 - [PostgreSQL contrib package](https://packages.debian.org/sid/postgresql-contrib-9.6)
+- [Wal-g backup tools](https://github.com/wal-g/wal-g)
 
 See the PostgreSQL image documentation for more details:
 https://hub.docker.com/_/postgres/
