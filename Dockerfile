@@ -40,6 +40,9 @@ ARG POSTGIS_VERSIONS
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8
 
+RUN cp /usr/share/i18n/SUPPORTED /etc/locale.gen && \
+    locale-gen
+
 RUN echo "deb http://deb.debian.org/debian stretch-backports main contrib non-free"  > /etc/apt/sources.list.d/backport.list && \
     apt-get update && apt-get upgrade -y && \
     apt-get install -y libbrotli-dev && \
