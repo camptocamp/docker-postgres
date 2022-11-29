@@ -19,17 +19,7 @@ define build-image
 	docker system prune --all -f
 endef
 
-all: 9.4 9.5 9.6 10 11 12 13 14
-
-9.4:
-	$(call build-image,"9.4","2.3 2.4 2.5")
-
-9.5:
-	$(call build-image,"9.5","2.3 2.4 2.5")
-	$(call build-image,"9.5","3")
-
-9.6:
-	$(call build-image,"9.6","2.3")
+all: 10 11 12 13 14
 
 10:
 	$(call build-image,"10","2.4")
