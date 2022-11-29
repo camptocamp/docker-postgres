@@ -1,8 +1,7 @@
 ARG BASE_TAG
-FROM postgres:${BASE_TAG} AS builder
+FROM postgres:${BASE_TAG}-bullseye AS builder
 
-RUN echo "deb http://deb.debian.org/debian stretch-backports main contrib non-free"  > /etc/apt/sources.list.d/backport.list && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y unzip build-essential git wget libbrotli-dev
 
 # Install Golang
@@ -34,7 +33,7 @@ RUN ./main/pg/wal-g --version && \
     cp ./main/pg/wal-g /wal-g-v2.0.1
 
 ARG BASE_TAG
-FROM postgres:${BASE_TAG}
+FROM postgres:${BASE_TAG}-bullseye
 
 ARG POSTGIS_VERSIONS
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -43,8 +42,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 RUN cp /usr/share/i18n/SUPPORTED /etc/locale.gen && \
     locale-gen
 
-RUN echo "deb http://deb.debian.org/debian stretch-backports main contrib non-free"  > /etc/apt/sources.list.d/backport.list && \
-    apt-get update && apt-get upgrade -y && \
+RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y libbrotli-dev && \
     echo "Postgis versions '$POSTGIS_VERSIONS'" && \
     for POSTGIS_VERSION in ${POSTGIS_VERSIONS}; do \
