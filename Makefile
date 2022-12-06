@@ -22,10 +22,9 @@ endef
 all: 10 11 12 13 14
 
 10:
-	$(call build-image,"10","2.4")
+	$(call build-image,"10","3")
 
 11:
-	$(call build-image,"11","2.5")
 	$(call build-image,"11","3")
 
 12:
