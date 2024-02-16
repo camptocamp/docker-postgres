@@ -1,5 +1,5 @@
 ARG BASE_TAG
-FROM postgres:${BASE_TAG}-bullseye AS builder
+FROM postgres:${BASE_TAG}-bookworm AS builder
 
 RUN apt-get update && \
     apt-get install -y unzip build-essential git wget libbrotli-dev
@@ -33,7 +33,7 @@ RUN ./main/pg/wal-g --version && \
     cp ./main/pg/wal-g /wal-g-v2.0.1
 
 ARG BASE_TAG
-FROM postgres:${BASE_TAG}-bullseye
+FROM postgres:${BASE_TAG}-bookworm
 
 ARG POSTGIS_VERSIONS
 ENV DEBIAN_FRONTEND=noninteractive \
