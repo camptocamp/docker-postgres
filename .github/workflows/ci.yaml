@@ -28,9 +28,9 @@ jobs:
       run: |
         make all
     - name: "Push images"
+      if: ${{ github.ref == 'refs/heads/master' }}
       env:
         PUSH_DOCKER_HUB: true
         PUSH_GHCR: true
       run: |
         make all
-      if: github.ref == 'master'
