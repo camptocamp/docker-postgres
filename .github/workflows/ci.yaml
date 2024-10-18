@@ -2,35 +2,45 @@
 name: Build PostgreSQL images
 
 on:
+  # trigger every sunday morning
   schedule:
     - cron: "2 2 * * SUN"
+  # trigger on PR merge and push to master branch
   push:
+    branches:
+      - master
+  # trigger on PR
+  pull_request:
+    branches:
+      - master
 
 jobs:
-  build:
-
+  build-and-push:
+    if: github.event_name == 'push' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 120
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - uses: camptocamp/initialise-gopass-summon-action@v2
-      with:
-        ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
-        github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
-        patterns: docker
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-    - name: "Build images"
-      env:
-        PUSH_DOCKER_HUB: false
-        PUSH_GHCR: false
-      run: |
-        make all
-    - name: "Push images"
-      env:
-        PUSH_DOCKER_HUB: true
-        PUSH_GHCR: true
-      run: |
-        make all
-      if: github.ref == 'master'
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login docker.io -u dockerc2c --password-stdin
+
+      - name: Build and push with Docker
+        run: make PUSH_DOCKER_HUB=true PUSH_GHCR=true
+
+  build-on-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build without pushing
+        run: make
