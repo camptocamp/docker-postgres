@@ -42,3 +42,6 @@ all: 10 11 12 13 14 15 16
 
 16:
 	$(call build-image,"16","3","bookworm")
+
+17:
+	$(call build-image,"17","3","bookworm")
