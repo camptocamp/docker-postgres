@@ -53,11 +53,6 @@ RUN apt-get update && apt-get upgrade -y && \
       postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION-scripts; \
     done && \
     apt-get install --no-install-recommends -y postgresql-$PG_MAJOR-pgrouting && \
-    if [ $(echo $PG_MAJOR | cut -f 1 -d .) -ge "10" ]; then \
-      apt-get install --no-install-recommends -y postgresql-contrib; \
-    else \
-      apt-get install --no-install-recommends -y postgresql-contrib-$PG_MAJOR; \
-    fi && \
     apt-get install -y ca-certificates tmux screen curl less && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
