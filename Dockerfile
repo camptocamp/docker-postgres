@@ -1,9 +1,9 @@
 ARG BASE_TAG
 ARG DEBIAN_RELEASE
+ARG PGVECTOR_VERSION
 FROM postgres:${BASE_TAG}-${DEBIAN_RELEASE} AS builder
-
 RUN apt-get update && \
-    apt-get install -y unzip build-essential git wget libbrotli-dev
+    apt-get install -y unzip build-essential git wget libbrotli-dev postgresql-server-dev-$PG_MAJOR
 
 # Install Golang
 RUN wget https://go.dev/dl/go1.19.1.linux-amd64.tar.gz && \
@@ -33,6 +33,16 @@ RUN git checkout v2.0.1 && \
 RUN ./main/pg/wal-g --version && \
     cp ./main/pg/wal-g /wal-g-v2.0.1
 
+# Build pgvector extension
+WORKDIR /tmp
+RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v${PGVECTOR_VERSION}.tar.gz && \
+    tar -xzf v${PGVECTOR_VERSION}.tar.gz && \
+    rm v${PGVECTOR_VERSION}.tar.gz && \
+    mv pgvector-${PGVECTOR_VERSION} pgvector
+
+WORKDIR /tmp/pgvector
+RUN make && make DESTDIR=/pgvector_install install
+
 ARG BASE_TAG
 ARG DEBIAN_RELEASE
 FROM postgres:${BASE_TAG}-${DEBIAN_RELEASE}
@@ -57,6 +67,7 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+COPY --from=builder /pgvector_install /
 COPY --from=builder /wal-g-v1.1 /usr/local/bin/wal-g-v1.1
 COPY --from=builder /wal-g-v2.0.1 /usr/local/bin/wal-g-v2.0.1
 
