@@ -23,16 +23,16 @@ endef
 all: 14 15 16 17 18
 
 14:
-	$(call build-image,"14","3","bookworm")
+	$(call build-image,"14","3","trixie")
 
 15:
-	$(call build-image,"15","3","bookworm")
+	$(call build-image,"15","3","trixie")
 
 16:
-	$(call build-image,"16","3","bookworm")
+	$(call build-image,"16","3","trixie")
 
 17:
-	$(call build-image,"17","3","bookworm")
+	$(call build-image,"17","3","trixie")
 
 18:
-	$(call build-image,"17","3","bookworm")
+	$(call build-image,"18","3","trixie")
