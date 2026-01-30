@@ -6,8 +6,8 @@ RUN apt-get update && \
     apt-get install -y unzip build-essential git wget libbrotli-dev
 
 # Install Golang
-RUN wget https://go.dev/dl/go1.19.1.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.19.1.linux-amd64.tar.gz
+RUN wget https://go.dev/dl/go1.25.6.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.25.6.linux-amd64.tar.gz
 
 ENV PATH=$PATH:/usr/local/go/bin
 RUN go version
