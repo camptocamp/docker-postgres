@@ -20,19 +20,7 @@ define build-image
 	docker system prune --all -f
 endef
 
-all: 10 11 12 13 14 15 16
-
-10:
-	$(call build-image,"10","3","bullseye")
-
-11:
-	$(call build-image,"11","3","bookworm")
-
-12:
-	$(call build-image,"12","3","bookworm")
-
-13:
-	$(call build-image,"13","3","bookworm")
+all: 14 15 16 17 18
 
 14:
 	$(call build-image,"14","3","bookworm")
@@ -44,4 +32,7 @@ all: 10 11 12 13 14 15 16
 	$(call build-image,"16","3","bookworm")
 
 17:
+	$(call build-image,"17","3","bookworm")
+
+18:
 	$(call build-image,"17","3","bookworm")
