@@ -6,7 +6,7 @@ define build-image
 	@echo Base tag $1
 	@echo Postgis versions $2
 	@echo Debian release $3
-	docker build --pull --no-cache --build-arg BASE_TAG=${1} --build-arg POSTGIS_VERSIONS=${2} --build-arg DEBIAN_RELEASE=${3} --build-arg PGVECTOR_VERSION=${PGVECTOR_VERSION} -t camptocamp/postgres:${1}-postgis-$(subst $(space),-,${2}) .
+	docker build --pull --no-cache --build-arg BASE_TAG=${1} --build-arg POSTGIS_VERSIONS=${2} --build-arg DEBIAN_RELEASE=${3} --build-arg PGVECTOR_VERSION=$(PGVECTOR_VERSION) -t camptocamp/postgres:${1}-postgis-$(subst $(space),-,${2}) .
 	docker stop db || true
 	docker run --rm --name=db --detach --publish=5432:5432 --env=POSTGRES_USER=www-data --env=POSTGRES_PASSWORD=www-data --env=POSTGRES_DB=test camptocamp/postgres:${1}-postgis-$(subst $(space),-,${2})
 	sleep 10

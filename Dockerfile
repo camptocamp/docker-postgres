@@ -1,7 +1,7 @@
 ARG BASE_TAG
 ARG DEBIAN_RELEASE
-ARG PGVECTOR_VERSION
 FROM postgres:${BASE_TAG}-${DEBIAN_RELEASE} AS builder
+ARG PGVECTOR_VERSION
 RUN apt-get update && \
     apt-get install -y unzip build-essential git wget libbrotli-dev postgresql-server-dev-$PG_MAJOR
 
