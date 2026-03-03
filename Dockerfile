@@ -1,7 +1,7 @@
 ARG BASE_TAG
-ARG DEBIAN_RELEASE
-FROM postgres:${BASE_TAG}-${DEBIAN_RELEASE} AS builder
-ARG PGVECTOR_VERSION
+FROM postgres:${BASE_TAG}-trixie AS builder
+
+ENV PGVECTOR_VERSION=0.8.1
 RUN apt-get update && \
     apt-get install -y unzip build-essential git wget libbrotli-dev postgresql-server-dev-$PG_MAJOR
 
@@ -44,26 +44,28 @@ WORKDIR /tmp/pgvector
 RUN make && make DESTDIR=/pgvector_install install
 
 ARG BASE_TAG
-ARG DEBIAN_RELEASE
-FROM postgres:${BASE_TAG}-${DEBIAN_RELEASE}
+FROM postgres:${BASE_TAG}-trixie
 
-ARG POSTGIS_VERSIONS
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8
 
 RUN cp /usr/share/i18n/SUPPORTED /etc/locale.gen && \
     locale-gen
 
+ADD 99force-gpgv /tmp/99force-gpgv
+
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y libbrotli-dev && \
-    echo "Postgis versions '$POSTGIS_VERSIONS'" && \
-    for POSTGIS_VERSION in ${POSTGIS_VERSIONS}; do \
-      apt-get install --no-install-recommends -y \
-      postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION \
-      postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION-scripts; \
-    done && \
+    apt-get install -y gpgv libbrotli-dev curl lsb-release ca-certificates gnupg && \
+    mv /tmp/99force-gpgv /etc/apt/apt.conf.d/99force-gpgv && \
+    echo "deb http://apt.dalibo.org/labs $(lsb_release -cs)-dalibo main" > /etc/apt/sources.list.d/dalibo-labs.list && \
+    curl -fsSL -o /etc/apt/trusted.gpg.d/dalibo-labs.gpg https://apt.dalibo.org/labs/debian-dalibo.gpg && \
+    apt-get update && \
+    apt-get install --no-install-recommends -y \
+    postgresql-$PG_MAJOR-postgis-3 \
+    postgresql-$PG_MAJOR-postgis-3-scripts \
+    postgresql_anonymizer_$PG_MAJOR; \
     apt-get install --no-install-recommends -y postgresql-$PG_MAJOR-pgrouting && \
-    apt-get install -y ca-certificates tmux screen curl less && \
+    apt-get install -y tmux screen less && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
