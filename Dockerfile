@@ -41,7 +41,9 @@ RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v${PGVECTOR_VERS
     mv pgvector-${PGVECTOR_VERSION} pgvector
 
 WORKDIR /tmp/pgvector
-RUN make && make DESTDIR=/pgvector_install install
+# Build w/ OPTFLAGS="" for generic x86-64: the default -march=native would tie
+# the binary to the CPU of the machine building the image.
+RUN make OPTFLAGS="" && make OPTFLAGS="" DESTDIR=/pgvector_install install
 
 ARG BASE_TAG
 FROM postgres:${BASE_TAG}-trixie
